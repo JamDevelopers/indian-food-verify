@@ -1,0 +1,151 @@
+{
+  "summary": {
+    "total": 20,
+    "passed": 19,
+    "failed": 1,
+    "success_rate": 95.0
+  },
+  "results": [
+    {
+      "test": "API Health Check",
+      "success": true,
+      "message": "API is responding: Food Health Tracker API",
+      "timestamp": "2025-07-15T08:48:43.363159",
+      "response_data": null
+    },
+    {
+      "test": "Food Search - coca cola",
+      "success": true,
+      "message": "Found 5 products, first: Sidi Ali",
+      "timestamp": "2025-07-15T08:48:43.942540",
+      "response_data": null
+    },
+    {
+      "test": "Food Search - apple",
+      "success": true,
+      "message": "Found 5 products, first: Sidi Ali",
+      "timestamp": "2025-07-15T08:48:44.576939",
+      "response_data": null
+    },
+    {
+      "test": "Food Search - bread",
+      "success": true,
+      "message": "Found 5 products, first: Sidi Ali",
+      "timestamp": "2025-07-15T08:48:44.994507",
+      "response_data": null
+    },
+    {
+      "test": "Food Search - banana",
+      "success": true,
+      "message": "Found 5 products, first: Sidi Ali",
+      "timestamp": "2025-07-15T08:48:53.854944",
+      "response_data": null
+    },
+    {
+      "test": "Food Search - milk",
+      "success": true,
+      "message": "Found 5 products, first: Sidi Ali",
+      "timestamp": "2025-07-15T08:48:54.265680",
+      "response_data": null
+    },
+    {
+      "test": "Health Scoring - Coca Cola",
+      "success": false,
+      "message": "Score too high for sugary drink: 100.0 (Excellent)",
+      "timestamp": "2025-07-15T08:48:54.807710",
+      "response_data": null
+    },
+    {
+      "test": "Health Scoring - Apple",
+      "success": true,
+      "message": "Correct high score: 100.0 (Excellent)",
+      "timestamp": "2025-07-15T08:48:55.211163",
+      "response_data": null
+    },
+    {
+      "test": "Barcode Lookup - 3017620422003",
+      "success": true,
+      "message": "Found: Nutella",
+      "timestamp": "2025-07-15T08:48:56.118765",
+      "response_data": null
+    },
+    {
+      "test": "Barcode Lookup - 8901030835029",
+      "success": true,
+      "message": "Product not found (expected for some barcodes)",
+      "timestamp": "2025-07-15T08:48:56.517454",
+      "response_data": null
+    },
+    {
+      "test": "Barcode Lookup - 4902777000015",
+      "success": true,
+      "message": "Product not found (expected for some barcodes)",
+      "timestamp": "2025-07-15T08:48:56.912717",
+      "response_data": null
+    },
+    {
+      "test": "Barcode Lookup - 0012000161155",
+      "success": true,
+      "message": "Found: Life Water",
+      "timestamp": "2025-07-15T08:48:57.317367",
+      "response_data": null
+    },
+    {
+      "test": "Barcode Lookup Functionality",
+      "success": true,
+      "message": "Successfully looked up 2 products",
+      "timestamp": "2025-07-15T08:48:57.317404",
+      "response_data": null
+    },
+    {
+      "test": "Food Tracking - Add Entry",
+      "success": true,
+      "message": "Successfully tracked Sidi Ali",
+      "timestamp": "2025-07-15T08:48:57.792993",
+      "response_data": null
+    },
+    {
+      "test": "Food Tracking - Get History",
+      "success": true,
+      "message": "Retrieved 1 tracking entries",
+      "timestamp": "2025-07-15T08:48:57.802132",
+      "response_data": null
+    },
+    {
+      "test": "Food Tracking - Delete Entry",
+      "success": true,
+      "message": "Successfully deleted tracking entry",
+      "timestamp": "2025-07-15T08:48:57.852944",
+      "response_data": null
+    },
+    {
+      "test": "Response Time - API Root",
+      "success": true,
+      "message": "Responded in 0.01s",
+      "timestamp": "2025-07-15T08:48:57.861594",
+      "response_data": null
+    },
+    {
+      "test": "Response Time - Food Search",
+      "success": true,
+      "message": "Responded in 0.41s",
+      "timestamp": "2025-07-15T08:48:58.270685",
+      "response_data": null
+    },
+    {
+      "test": "Error Handling - Invalid Barcode",
+      "success": true,
+      "message": "Correctly returned 404 for invalid barcode",
+      "timestamp": "2025-07-15T08:48:58.666604",
+      "response_data": null
+    },
+    {
+      "test": "Error Handling - Empty Search",
+      "success": true,
+      "message": "Handled empty search appropriately (status 200)",
+      "timestamp": "2025-07-15T08:48:59.100859",
+      "response_data": null
+    }
+  ],
+  "timestamp": "2025-07-15T08:48:59.101121"
+}
