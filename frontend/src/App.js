@@ -8,10 +8,10 @@ const API = `${BACKEND_URL}/api`;
 // Health Score Badge Component
 const HealthBadge = ({ score, rating }) => {
   const getColor = (score) => {
-    if (score >= 80) return "bg-green-500";
-    if (score >= 65) return "bg-green-400";
-    if (score >= 50) return "bg-yellow-500";
-    if (score >= 35) return "bg-orange-500";
+    if (score >= 85) return "bg-green-500";
+    if (score >= 70) return "bg-green-400";
+    if (score >= 55) return "bg-yellow-500";
+    if (score >= 40) return "bg-orange-500";
     return "bg-red-500";
   };
 
@@ -38,6 +38,99 @@ const NutritionBar = ({ label, value, unit, maxValue, color = "bg-blue-500" }) =
           className={`h-2 rounded-full ${color}`}
           style={{ width: `${percentage}%` }}
         ></div>
+      </div>
+    </div>
+  );
+};
+
+// Indian Food Categories Component
+const IndianFoodCategories = ({ onCategorySelect }) => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${API}/food/categories`);
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+      <h3 className="text-lg font-semibold mb-3">Popular Indian Food Categories</h3>
+      <div className="flex flex-wrap gap-2">
+        {categories.slice(0, 20).map((category) => (
+          <button
+            key={category}
+            onClick={() => onCategorySelect(category)}
+            className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm hover:bg-orange-200 transition-colors"
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Popular Indian Foods Component
+const PopularIndianFoods = ({ onProductSelect }) => {
+  const [popularFoods, setPopularFoods] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPopularFoods = async () => {
+      try {
+        const response = await axios.get(`${API}/food/popular-indian`);
+        setPopularFoods(response.data);
+      } catch (error) {
+        console.error("Error fetching popular foods:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPopularFoods();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <h3 className="text-lg font-semibold mb-3">Popular Indian Foods</h3>
+        <div className="text-center py-4">Loading popular foods...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+      <h3 className="text-lg font-semibold mb-3">Popular Indian Foods</h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {popularFoods.map((food) => (
+          <div
+            key={food.id}
+            onClick={() => onProductSelect(food)}
+            className="cursor-pointer p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+          >
+            {food.image_url && (
+              <img 
+                src={food.image_url} 
+                alt={food.product_name}
+                className="w-full h-16 object-cover rounded mb-2"
+              />
+            )}
+            <h4 className="text-sm font-medium text-gray-800 mb-1 line-clamp-2">
+              {food.product_name}
+            </h4>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-600">{food.brand}</span>
+              <HealthBadge score={food.health_score} rating={food.health_rating} />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
