@@ -62,37 +62,82 @@
   }
 }
 
-/* Better button hover effects */
-.btn-primary {
-  @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200;
+/* Additional styles for Indian food categories */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.btn-secondary {
-  @apply bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200;
+/* Indian theme colors */
+.indian-primary {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
 }
 
-.btn-danger {
-  @apply bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200;
+.indian-secondary {
+  background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
 }
 
-/* Card shadow improvements */
-.card {
-  @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200;
+/* Category buttons */
+.category-btn {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
-/* Focus states for better accessibility */
-input:focus,
-button:focus {
-  outline: 2px solid #3498db;
-  outline-offset: 2px;
+.category-btn:hover {
+  border-color: #ff6b35;
+  transform: translateY(-2px);
 }
 
-/* Health badge animations */
-.health-badge {
-  animation: pulse 2s infinite;
+/* Popular foods grid */
+.popular-foods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+/* Enhanced health badges for Indian context */
+.health-badge-indian {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Nutrition bars with Indian context */
+.nutrition-bar-indian {
+  background: linear-gradient(90deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Search suggestions */
+.search-suggestions {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.search-suggestion-item {
+  padding: 0.5rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.search-suggestion-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Mobile responsiveness for Indian UI */
+@media (max-width: 768px) {
+  .popular-foods-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .indian-categories {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nutrition-grid {
+    grid-template-columns: 1fr;
+  }
 }
