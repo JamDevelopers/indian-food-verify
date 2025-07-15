@@ -145,32 +145,118 @@ class HealthScoreCalculator:
 
 class OpenFoodFactsService:
     BASE_URL = "https://world.openfoodfacts.org/api/v2"
+    INDIA_BASE_URL = "https://in.openfoodfacts.org/api/v2"
+    
+    # Indian food categories and terms for enhanced search
+    INDIAN_FOOD_CATEGORIES = [
+        "dal", "rice", "wheat", "atta", "roti", "chapati", "naan", "paratha",
+        "curry", "masala", "spices", "ghee", "oil", "pickle", "chutney",
+        "sweets", "mithai", "laddu", "gulab jamun", "rasgulla", "jalebi",
+        "namkeen", "bhujia", "mixture", "sev", "papad", "poha", "upma",
+        "samosa", "kachori", "biscuit", "rusk", "tea", "chai", "coffee",
+        "lassi", "buttermilk", "yogurt", "curd", "paneer", "milk", "coconut"
+    ]
     
     @staticmethod
     async def search_products(query: str, limit: int = 20) -> List[FoodProduct]:
-        """Search for food products using OpenFoodFacts API"""
+        """Search for food products using OpenFoodFacts API with Indian preference"""
         async with httpx.AsyncClient() as client:
             try:
-                response = await client.get(
-                    f"{OpenFoodFactsService.BASE_URL}/search",
-                    params={
-                        "search_terms": query,
-                        "page_size": limit,
-                        "fields": "code,product_name,brands,image_url,nutriscore_grade,nova_group,nutriments,ingredients_text,additives_tags"
-                    }
+                # Enhanced search with Indian terms and global fallback
+                indian_products = await OpenFoodFactsService._search_with_url(
+                    client, OpenFoodFactsService.INDIA_BASE_URL, query, min(limit, 15)
                 )
-                response.raise_for_status()
-                data = response.json()
                 
-                products = []
-                for product in data.get("products", []):
-                    food_product = OpenFoodFactsService._parse_product(product)
-                    products.append(food_product)
+                # If we have good results from Indian database, use them
+                if len(indian_products) >= 5:
+                    return indian_products[:limit]
                 
-                return products
+                # Otherwise, search globally but with Indian preference
+                global_products = await OpenFoodFactsService._search_with_url(
+                    client, OpenFoodFactsService.BASE_URL, query, limit
+                )
+                
+                # Combine and prioritize Indian products
+                all_products = indian_products + global_products
+                
+                # Remove duplicates and prioritize Indian brands
+                seen_products = set()
+                filtered_products = []
+                indian_brands = ["amul", "britannia", "parle", "haldiram", "mdh", "everest", "tata", "nestle india", "itc", "dabur", "patanjali"]
+                
+                # First pass: Indian brands
+                for product in all_products:
+                    if product.id not in seen_products:
+                        if product.brand and any(brand in product.brand.lower() for brand in indian_brands):
+                            filtered_products.append(product)
+                            seen_products.add(product.id)
+                
+                # Second pass: Other products
+                for product in all_products:
+                    if product.id not in seen_products and len(filtered_products) < limit:
+                        filtered_products.append(product)
+                        seen_products.add(product.id)
+                
+                return filtered_products[:limit]
+                
             except Exception as e:
                 logging.error(f"Error searching products: {str(e)}")
                 return []
+    
+    @staticmethod
+    async def _search_with_url(client: httpx.AsyncClient, base_url: str, query: str, limit: int) -> List[FoodProduct]:
+        """Search with specific base URL"""
+        try:
+            # Enhance query with Indian context if it matches Indian food categories
+            enhanced_query = OpenFoodFactsService._enhance_indian_query(query)
+            
+            response = await client.get(
+                f"{base_url}/search",
+                params={
+                    "search_terms": enhanced_query,
+                    "page_size": limit,
+                    "countries": "India" if "in.openfoodfacts.org" in base_url else "",
+                    "fields": "code,product_name,brands,image_url,nutriscore_grade,nova_group,nutriments,ingredients_text,additives_tags,countries_tags"
+                }
+            )
+            response.raise_for_status()
+            data = response.json()
+            
+            products = []
+            for product in data.get("products", []):
+                food_product = OpenFoodFactsService._parse_product(product)
+                products.append(food_product)
+            
+            return products
+        except Exception as e:
+            logging.error(f"Error searching with URL {base_url}: {str(e)}")
+            return []
+    
+    @staticmethod
+    def _enhance_indian_query(query: str) -> str:
+        """Enhance search query with Indian context"""
+        query_lower = query.lower()
+        
+        # Map common Indian food terms to better search terms
+        indian_mappings = {
+            "atta": "wheat flour atta",
+            "dal": "lentils dal",
+            "chawal": "rice basmati",
+            "ghee": "clarified butter ghee",
+            "masala": "spice masala mix",
+            "namkeen": "savory snacks namkeen",
+            "mithai": "indian sweets",
+            "chai": "tea chai",
+            "lassi": "yogurt drink lassi",
+            "papad": "papadum crispy",
+            "pickle": "indian pickle achar"
+        }
+        
+        for indian_term, enhanced_term in indian_mappings.items():
+            if indian_term in query_lower:
+                return enhanced_term
+        
+        return query
     
     @staticmethod
     async def get_product_by_barcode(barcode: str) -> Optional[FoodProduct]:
