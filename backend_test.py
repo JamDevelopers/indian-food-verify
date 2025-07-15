@@ -610,6 +610,12 @@ class BackendTester:
         
         # Run all tests
         await self.test_food_search_real_products()
+        await self.test_indian_food_search()
+        await self.test_indian_food_categories()
+        await self.test_indian_brand_prioritization()
+        await self.test_popular_indian_foods_api()
+        await self.test_enhanced_barcode_lookup()
+        await self.test_indian_nutritional_guidelines()
         await self.test_health_scoring_algorithm()
         await self.test_barcode_lookup()
         await self.test_food_tracking()
