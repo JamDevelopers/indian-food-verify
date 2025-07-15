@@ -260,24 +260,50 @@ class OpenFoodFactsService:
     
     @staticmethod
     async def get_product_by_barcode(barcode: str) -> Optional[FoodProduct]:
-        """Get product details by barcode"""
+        """Get product details by barcode with Indian preference"""
         async with httpx.AsyncClient() as client:
             try:
-                response = await client.get(
-                    f"{OpenFoodFactsService.BASE_URL}/product/{barcode}",
-                    params={
-                        "fields": "code,product_name,brands,image_url,nutriscore_grade,nova_group,nutriments,ingredients_text,additives_tags"
-                    }
+                # Try Indian database first
+                product = await OpenFoodFactsService._get_product_from_url(
+                    client, OpenFoodFactsService.INDIA_BASE_URL, barcode
                 )
-                response.raise_for_status()
-                data = response.json()
                 
-                if data.get("status") == 1 and "product" in data:
-                    return OpenFoodFactsService._parse_product(data["product"])
-                return None
+                if product:
+                    return product
+                
+                # Fallback to global database
+                return await OpenFoodFactsService._get_product_from_url(
+                    client, OpenFoodFactsService.BASE_URL, barcode
+                )
+                
             except Exception as e:
                 logging.error(f"Error getting product by barcode: {str(e)}")
                 return None
+    
+    @staticmethod
+    async def _get_product_from_url(client: httpx.AsyncClient, base_url: str, barcode: str) -> Optional[FoodProduct]:
+        """Get product from specific URL"""
+        try:
+            response = await client.get(
+                f"{base_url}/product/{barcode}",
+                params={
+                    "fields": "code,product_name,brands,image_url,nutriscore_grade,nova_group,nutriments,ingredients_text,additives_tags,countries_tags"
+                }
+            )
+            response.raise_for_status()
+            data = response.json()
+            
+            if data.get("status") == 1 and "product" in data:
+                return OpenFoodFactsService._parse_product(data["product"])
+            return None
+        except Exception as e:
+            logging.error(f"Error getting product from {base_url}: {str(e)}")
+            return None
+    
+    @staticmethod
+    async def search_indian_categories() -> List[str]:
+        """Get popular Indian food categories"""
+        return OpenFoodFactsService.INDIAN_FOOD_CATEGORIES
     
     @staticmethod
     def _parse_product(product_data: Dict[str, Any]) -> FoodProduct:
