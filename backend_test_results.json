@@ -1,151 +1,354 @@
 {
   "summary": {
-    "total": 20,
-    "passed": 19,
-    "failed": 1,
-    "success_rate": 95.0
+    "total": 49,
+    "passed": 41,
+    "failed": 8,
+    "success_rate": 83.6734693877551
   },
   "results": [
     {
       "test": "API Health Check",
       "success": true,
       "message": "API is responding: Food Health Tracker API",
-      "timestamp": "2025-07-15T08:48:43.363159",
+      "timestamp": "2025-07-15T09:02:36.368172",
       "response_data": null
     },
     {
       "test": "Food Search - coca cola",
       "success": true,
-      "message": "Found 5 products, first: Sidi Ali",
-      "timestamp": "2025-07-15T08:48:43.942540",
+      "message": "Found 5 products, first: Sting",
+      "timestamp": "2025-07-15T09:02:47.339746",
       "response_data": null
     },
     {
       "test": "Food Search - apple",
       "success": true,
-      "message": "Found 5 products, first: Sidi Ali",
-      "timestamp": "2025-07-15T08:48:44.576939",
+      "message": "Found 5 products, first: Sting",
+      "timestamp": "2025-07-15T09:02:47.755984",
       "response_data": null
     },
     {
       "test": "Food Search - bread",
       "success": true,
-      "message": "Found 5 products, first: Sidi Ali",
-      "timestamp": "2025-07-15T08:48:44.994507",
+      "message": "Found 5 products, first: Sting",
+      "timestamp": "2025-07-15T09:02:48.471560",
       "response_data": null
     },
     {
       "test": "Food Search - banana",
       "success": true,
-      "message": "Found 5 products, first: Sidi Ali",
-      "timestamp": "2025-07-15T08:48:53.854944",
+      "message": "Found 5 products, first: Sting",
+      "timestamp": "2025-07-15T09:02:48.882282",
       "response_data": null
     },
     {
       "test": "Food Search - milk",
       "success": true,
-      "message": "Found 5 products, first: Sidi Ali",
-      "timestamp": "2025-07-15T08:48:54.265680",
+      "message": "Found 5 products, first: Sting",
+      "timestamp": "2025-07-15T09:02:49.299698",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - basmati rice",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:50.123697",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - wheat atta",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:50.668935",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - toor dal",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:51.200103",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - amul milk",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:51.818757",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - britannia biscuit",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:52.375763",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - haldiram namkeen",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:52.910620",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - chana dal",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:53.416759",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Search - ghee",
+      "success": true,
+      "message": "Found 10 products, health scoring: True",
+      "timestamp": "2025-07-15T09:02:53.956014",
+      "response_data": null
+    },
+    {
+      "test": "Indian OpenFoodFacts Integration",
+      "success": true,
+      "message": "Successfully searched 8/8 Indian terms",
+      "timestamp": "2025-07-15T09:02:53.956068",
+      "response_data": null
+    },
+    {
+      "test": "Indian Food Categories API",
+      "success": true,
+      "message": "Found 42 categories including: dal, rice, atta, ghee, masala",
+      "timestamp": "2025-07-15T09:02:53.961305",
+      "response_data": null
+    },
+    {
+      "test": "Indian Brand Priority - milk",
+      "success": false,
+      "message": "No Indian brands in top 3 results for milk",
+      "timestamp": "2025-07-15T09:02:54.496622",
+      "response_data": null
+    },
+    {
+      "test": "Indian Brand Priority - biscuit",
+      "success": false,
+      "message": "No Indian brands in top 3 results for biscuit",
+      "timestamp": "2025-07-15T09:02:55.031645",
+      "response_data": null
+    },
+    {
+      "test": "Indian Brand Priority - spices",
+      "success": false,
+      "message": "No Indian brands in top 3 results for spices",
+      "timestamp": "2025-07-15T09:02:55.560266",
+      "response_data": null
+    },
+    {
+      "test": "Indian Brand Priority - namkeen",
+      "success": false,
+      "message": "No Indian brands in top 3 results for namkeen",
+      "timestamp": "2025-07-15T09:02:56.097184",
+      "response_data": null
+    },
+    {
+      "test": "Indian Brand Prioritization",
+      "success": false,
+      "message": "Brand prioritization only working for 0/4 terms",
+      "timestamp": "2025-07-15T09:02:56.097218",
+      "response_data": null
+    },
+    {
+      "test": "Popular Indian Foods API",
+      "success": false,
+      "message": "Only 0/3 products seem Indian-related",
+      "timestamp": "2025-07-15T09:03:02.978081",
+      "response_data": null
+    },
+    {
+      "test": "Enhanced Barcode - Indian 8901030835029",
+      "success": true,
+      "message": "Product not found (acceptable for test barcodes)",
+      "timestamp": "2025-07-15T09:03:03.734406",
+      "response_data": null
+    },
+    {
+      "test": "Enhanced Barcode - Indian 8901030800000",
+      "success": true,
+      "message": "Product not found (acceptable for test barcodes)",
+      "timestamp": "2025-07-15T09:03:04.498918",
+      "response_data": null
+    },
+    {
+      "test": "Enhanced Barcode - Indian 8901030900000",
+      "success": true,
+      "message": "Product not found (acceptable for test barcodes)",
+      "timestamp": "2025-07-15T09:03:05.254318",
+      "response_data": null
+    },
+    {
+      "test": "Enhanced Barcode - Indian 8901725000000",
+      "success": true,
+      "message": "Product not found (acceptable for test barcodes)",
+      "timestamp": "2025-07-15T09:03:06.006652",
+      "response_data": null
+    },
+    {
+      "test": "Enhanced Barcode - International 3017620422003",
+      "success": true,
+      "message": "Found: Nutella",
+      "timestamp": "2025-07-15T09:03:06.479547",
+      "response_data": null
+    },
+    {
+      "test": "Enhanced Barcode - International 0012000161155",
+      "success": true,
+      "message": "Found: Life Water",
+      "timestamp": "2025-07-15T09:03:06.881969",
+      "response_data": null
+    },
+    {
+      "test": "Enhanced Barcode Lookup",
+      "success": true,
+      "message": "Barcode lookup functionality working (tested 6 barcodes)",
+      "timestamp": "2025-07-15T09:03:06.882013",
+      "response_data": null
+    },
+    {
+      "test": "Indian Nutrition - ghee",
+      "success": true,
+      "message": "Score 20.0 (Very Poor) - should have moderate score despite high fat (traditional Indian food)",
+      "timestamp": "2025-07-15T09:03:07.655046",
+      "response_data": null
+    },
+    {
+      "test": "Indian Nutrition - basmati rice",
+      "success": true,
+      "message": "Score 20.0 (Very Poor) - should have good score (staple Indian food)",
+      "timestamp": "2025-07-15T09:03:08.697600",
+      "response_data": null
+    },
+    {
+      "test": "Indian Nutrition - dal",
+      "success": false,
+      "message": "Score 20.0 seems inappropriate - should have excellent score (high protein, fiber)",
+      "timestamp": "2025-07-15T09:03:09.480113",
+      "response_data": null
+    },
+    {
+      "test": "Indian Nutrition - indian sweets",
+      "success": true,
+      "message": "Score 20.0 (Very Poor) - should have poor score (high sugar)",
+      "timestamp": "2025-07-15T09:03:10.256484",
+      "response_data": null
+    },
+    {
+      "test": "Indian Nutrition - namkeen",
+      "success": true,
+      "message": "Score 20.0 (Very Poor) - should have poor score (high sodium, processed)",
+      "timestamp": "2025-07-15T09:03:11.028675",
+      "response_data": null
+    },
+    {
+      "test": "Indian Nutritional Guidelines",
+      "success": true,
+      "message": "Health scoring appropriate for 4/5 Indian food types",
+      "timestamp": "2025-07-15T09:03:11.028714",
       "response_data": null
     },
     {
       "test": "Health Scoring - Coca Cola",
-      "success": false,
-      "message": "Score too high for sugary drink: 100.0 (Excellent)",
-      "timestamp": "2025-07-15T08:48:54.807710",
+      "success": true,
+      "message": "Correct low score: 20.0 (Very Poor)",
+      "timestamp": "2025-07-15T09:03:12.055353",
       "response_data": null
     },
     {
       "test": "Health Scoring - Apple",
-      "success": true,
-      "message": "Correct high score: 100.0 (Excellent)",
-      "timestamp": "2025-07-15T08:48:55.211163",
+      "success": false,
+      "message": "Score too low for healthy fruit: 20.0 (Very Poor)",
+      "timestamp": "2025-07-15T09:03:12.862406",
       "response_data": null
     },
     {
       "test": "Barcode Lookup - 3017620422003",
       "success": true,
       "message": "Found: Nutella",
-      "timestamp": "2025-07-15T08:48:56.118765",
+      "timestamp": "2025-07-15T09:03:13.316149",
       "response_data": null
     },
     {
       "test": "Barcode Lookup - 8901030835029",
       "success": true,
       "message": "Product not found (expected for some barcodes)",
-      "timestamp": "2025-07-15T08:48:56.517454",
+      "timestamp": "2025-07-15T09:03:14.134181",
       "response_data": null
     },
     {
       "test": "Barcode Lookup - 4902777000015",
       "success": true,
       "message": "Product not found (expected for some barcodes)",
-      "timestamp": "2025-07-15T08:48:56.912717",
+      "timestamp": "2025-07-15T09:03:14.897711",
       "response_data": null
     },
     {
       "test": "Barcode Lookup - 0012000161155",
       "success": true,
       "message": "Found: Life Water",
-      "timestamp": "2025-07-15T08:48:57.317367",
+      "timestamp": "2025-07-15T09:03:15.298544",
       "response_data": null
     },
     {
       "test": "Barcode Lookup Functionality",
       "success": true,
       "message": "Successfully looked up 2 products",
-      "timestamp": "2025-07-15T08:48:57.317404",
+      "timestamp": "2025-07-15T09:03:15.298580",
       "response_data": null
     },
     {
       "test": "Food Tracking - Add Entry",
       "success": true,
-      "message": "Successfully tracked Sidi Ali",
-      "timestamp": "2025-07-15T08:48:57.792993",
+      "message": "Successfully tracked Sting",
+      "timestamp": "2025-07-15T09:03:16.081751",
       "response_data": null
     },
     {
       "test": "Food Tracking - Get History",
       "success": true,
       "message": "Retrieved 1 tracking entries",
-      "timestamp": "2025-07-15T08:48:57.802132",
+      "timestamp": "2025-07-15T09:03:16.130847",
       "response_data": null
     },
     {
       "test": "Food Tracking - Delete Entry",
       "success": true,
       "message": "Successfully deleted tracking entry",
-      "timestamp": "2025-07-15T08:48:57.852944",
+      "timestamp": "2025-07-15T09:03:16.179249",
       "response_data": null
     },
     {
       "test": "Response Time - API Root",
       "success": true,
       "message": "Responded in 0.01s",
-      "timestamp": "2025-07-15T08:48:57.861594",
+      "timestamp": "2025-07-15T09:03:16.184828",
       "response_data": null
     },
     {
       "test": "Response Time - Food Search",
       "success": true,
       "message": "Responded in 0.41s",
-      "timestamp": "2025-07-15T08:48:58.270685",
+      "timestamp": "2025-07-15T09:03:16.598758",
       "response_data": null
     },
     {
       "test": "Error Handling - Invalid Barcode",
       "success": true,
       "message": "Correctly returned 404 for invalid barcode",
-      "timestamp": "2025-07-15T08:48:58.666604",
+      "timestamp": "2025-07-15T09:03:17.393386",
       "response_data": null
     },
     {
       "test": "Error Handling - Empty Search",
       "success": true,
       "message": "Handled empty search appropriately (status 200)",
-      "timestamp": "2025-07-15T08:48:59.100859",
+      "timestamp": "2025-07-15T09:03:17.935443",
       "response_data": null
     }
   ],
-  "timestamp": "2025-07-15T08:48:59.101121"
+  "timestamp": "2025-07-15T09:03:17.935798"
 }
