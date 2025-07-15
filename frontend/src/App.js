@@ -406,18 +406,37 @@ function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [userId] = useState("user_123"); // In a real app, this would come from authentication
   const [refreshHistory, setRefreshHistory] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const handleSearch = async (query) => {
+  const handleSearch = async (query, searchType = "name") => {
     setIsSearching(true);
     try {
-      const response = await axios.post(`${API}/food/search`, { query });
-      setSearchResults(response.data);
+      let response;
+      if (searchType === "barcode") {
+        response = await axios.get(`${API}/food/barcode/${query}`);
+        setSearchResults([response.data]);
+      } else {
+        response = await axios.post(`${API}/food/search`, { query });
+        setSearchResults(response.data);
+      }
     } catch (error) {
       console.error("Error searching foods:", error);
       setSearchResults([]);
+      if (error.response?.status === 404) {
+        alert("Product not found. Please check the barcode or try a different search.");
+      }
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const handleCategorySelect = (category) => {
+    handleSearch(category, "name");
+  };
+
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
+    setSearchResults([product]);
   };
 
   const handleTrackFood = async (product, quantity) => {
@@ -454,15 +473,20 @@ function App() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">Food Health Tracker</h1>
           <p className="text-gray-600">Track your food intake and discover how healthy your choices are</p>
+          <p className="text-sm text-orange-600 mt-2">✨ Enhanced for Indian food products</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
+            <IndianFoodCategories onCategorySelect={handleCategorySelect} />
+            <PopularIndianFoods onProductSelect={handleProductSelect} />
             <FoodSearch onSearch={handleSearch} isLoading={isSearching} />
             
             <div className="space-y-4">
               {searchResults.length > 0 && (
-                <h2 className="text-xl font-semibold text-gray-800">Search Results</h2>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {selectedProduct ? "Selected Product" : "Search Results"}
+                </h2>
               )}
               {searchResults.map((product) => (
                 <FoodProductCard
