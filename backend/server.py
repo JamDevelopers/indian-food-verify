@@ -371,19 +371,44 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+@api_router.get("/food/categories", response_model=List[str])
+async def get_indian_food_categories():
+    """Get popular Indian food categories"""
+    return await OpenFoodFactsService.search_indian_categories()
+
 @api_router.post("/food/search", response_model=List[FoodProduct])
 async def search_food_products(request: FoodSearchRequest):
-    """Search for food products"""
+    """Search for food products with Indian preference"""
     products = await OpenFoodFactsService.search_products(request.query, request.limit)
     return products
 
 @api_router.get("/food/barcode/{barcode}", response_model=FoodProduct)
 async def get_food_by_barcode(barcode: str):
-    """Get food product by barcode"""
+    """Get food product by barcode with Indian preference"""
     product = await OpenFoodFactsService.get_product_by_barcode(barcode)
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
+
+@api_router.get("/food/popular-indian", response_model=List[FoodProduct])
+async def get_popular_indian_foods():
+    """Get popular Indian food products"""
+    indian_terms = ["basmati rice", "wheat flour atta", "toor dal", "chana dal", "amul milk", "britannia biscuit"]
+    all_products = []
+    
+    for term in indian_terms:
+        products = await OpenFoodFactsService.search_products(term, 3)
+        all_products.extend(products)
+    
+    # Remove duplicates and return top 20
+    seen = set()
+    unique_products = []
+    for product in all_products:
+        if product.id not in seen:
+            unique_products.append(product)
+            seen.add(product.id)
+    
+    return unique_products[:20]
 
 @api_router.post("/food/track", response_model=FoodTrackingEntry)
 async def track_food(request: FoodTrackingCreate):
