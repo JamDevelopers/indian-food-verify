@@ -250,23 +250,55 @@ const FoodProductCard = ({ product, onTrack }) => {
 // Search Component
 const FoodSearch = ({ onSearch, isLoading }) => {
   const [query, setQuery] = useState("");
+  const [searchType, setSearchType] = useState("name");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      onSearch(query.trim());
+      onSearch(query.trim(), searchType);
     }
   };
+
+  // Indian food search suggestions
+  const indianSuggestions = [
+    "basmati rice", "wheat atta", "toor dal", "chana dal", "amul milk", 
+    "britannia biscuit", "haldiram namkeen", "mdh masala", "everest spices",
+    "parle glucose", "patanjali products", "dabur honey"
+  ];
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
       <h2 className="text-xl font-semibold mb-4">Search Food Products</h2>
-      <form onSubmit={handleSubmit} className="flex space-x-2">
+      
+      <div className="flex space-x-4 mb-4">
+        <label className="flex items-center">
+          <input
+            type="radio"
+            value="name"
+            checked={searchType === "name"}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="mr-2"
+          />
+          Product Name
+        </label>
+        <label className="flex items-center">
+          <input
+            type="radio"
+            value="barcode"
+            checked={searchType === "barcode"}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="mr-2"
+          />
+          Barcode
+        </label>
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex space-x-2 mb-4">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter food name or barcode..."
+          placeholder={searchType === "barcode" ? "Enter barcode..." : "Enter food name (e.g., basmati rice, atta, dal)..."}
           className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
@@ -277,6 +309,22 @@ const FoodSearch = ({ onSearch, isLoading }) => {
           {isLoading ? "Searching..." : "Search"}
         </button>
       </form>
+
+      <div className="text-sm text-gray-600 mb-2">Popular searches:</div>
+      <div className="flex flex-wrap gap-2">
+        {indianSuggestions.slice(0, 8).map((suggestion) => (
+          <button
+            key={suggestion}
+            onClick={() => {
+              setQuery(suggestion);
+              setSearchType("name");
+            }}
+            className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200"
+          >
+            {suggestion}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
