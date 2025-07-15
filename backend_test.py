@@ -644,29 +644,77 @@ class BackendTester:
         
         print("\n🎯 KEY FINDINGS:")
         
+        # Indian OpenFoodFacts Integration
+        indian_search_tests = [r for r in self.test_results if "Indian Food Search" in r["test"] or "Indian OpenFoodFacts Integration" in r["test"]]
+        indian_search_success = sum(1 for r in indian_search_tests if r["success"])
+        if indian_search_success > 0:
+            print(f"  ✅ Indian OpenFoodFacts Integration: Working ({indian_search_success}/{len(indian_search_tests)} tests passed)")
+        else:
+            print(f"  ❌ Indian OpenFoodFacts Integration: Failed")
+        
+        # Indian Food Categories
+        categories_tests = [r for r in self.test_results if "Indian Food Categories" in r["test"]]
+        categories_success = sum(1 for r in categories_tests if r["success"])
+        if categories_success > 0:
+            print(f"  ✅ Indian Food Categories API: Working")
+        else:
+            print(f"  ❌ Indian Food Categories API: Failed")
+        
+        # Indian Brand Prioritization
+        brand_tests = [r for r in self.test_results if "Indian Brand" in r["test"]]
+        brand_success = sum(1 for r in brand_tests if r["success"])
+        if brand_success > 0:
+            print(f"  ✅ Indian Brand Prioritization: Working ({brand_success}/{len(brand_tests)} tests passed)")
+        else:
+            print(f"  ❌ Indian Brand Prioritization: Failed")
+        
+        # Popular Indian Foods API
+        popular_tests = [r for r in self.test_results if "Popular Indian Foods" in r["test"]]
+        popular_success = sum(1 for r in popular_tests if r["success"])
+        if popular_success > 0:
+            print(f"  ✅ Popular Indian Foods API: Working")
+        else:
+            print(f"  ❌ Popular Indian Foods API: Failed")
+        
+        # Enhanced Barcode Lookup
+        enhanced_barcode_tests = [r for r in self.test_results if "Enhanced Barcode" in r["test"]]
+        enhanced_barcode_success = sum(1 for r in enhanced_barcode_tests if r["success"])
+        if enhanced_barcode_success > 0:
+            print(f"  ✅ Enhanced Barcode Lookup: Working ({enhanced_barcode_success}/{len(enhanced_barcode_tests)} tests passed)")
+        else:
+            print(f"  ❌ Enhanced Barcode Lookup: Failed")
+        
+        # Indian Nutritional Guidelines
+        nutrition_tests = [r for r in self.test_results if "Indian Nutrition" in r["test"] or "Indian Nutritional Guidelines" in r["test"]]
+        nutrition_success = sum(1 for r in nutrition_tests if r["success"])
+        if nutrition_success > 0:
+            print(f"  ✅ Indian Nutritional Guidelines: Working ({nutrition_success}/{len(nutrition_tests)} tests passed)")
+        else:
+            print(f"  ❌ Indian Nutritional Guidelines: Failed")
+        
         # OpenFoodFacts Integration
-        search_tests = [r for r in self.test_results if "Food Search" in r["test"]]
+        search_tests = [r for r in self.test_results if "Food Search" in r["test"] and "Indian" not in r["test"]]
         search_success = sum(1 for r in search_tests if r["success"])
         if search_success > 0:
-            print(f"  ✅ OpenFoodFacts API Integration: Working ({search_success}/{len(search_tests)} queries successful)")
+            print(f"  ✅ General OpenFoodFacts API Integration: Working ({search_success}/{len(search_tests)} queries successful)")
         else:
-            print(f"  ❌ OpenFoodFacts API Integration: Failed")
+            print(f"  ❌ General OpenFoodFacts API Integration: Failed")
         
         # Health Scoring
-        scoring_tests = [r for r in self.test_results if "Health Scoring" in r["test"]]
+        scoring_tests = [r for r in self.test_results if "Health Scoring" in r["test"] and "Indian" not in r["test"]]
         scoring_success = sum(1 for r in scoring_tests if r["success"])
         if scoring_success == len(scoring_tests) and len(scoring_tests) > 0:
-            print(f"  ✅ Health Scoring Algorithm: Working correctly")
+            print(f"  ✅ General Health Scoring Algorithm: Working correctly")
         else:
-            print(f"  ❌ Health Scoring Algorithm: Issues detected")
+            print(f"  ❌ General Health Scoring Algorithm: Issues detected")
         
         # Barcode Lookup
-        barcode_tests = [r for r in self.test_results if "Barcode Lookup" in r["test"]]
+        barcode_tests = [r for r in self.test_results if "Barcode Lookup" in r["test"] and "Enhanced" not in r["test"]]
         barcode_success = sum(1 for r in barcode_tests if r["success"])
         if barcode_success > 0:
-            print(f"  ✅ Barcode Lookup: Working ({barcode_success}/{len(barcode_tests)} lookups successful)")
+            print(f"  ✅ General Barcode Lookup: Working ({barcode_success}/{len(barcode_tests)} lookups successful)")
         else:
-            print(f"  ❌ Barcode Lookup: Failed")
+            print(f"  ❌ General Barcode Lookup: Failed")
         
         # Food Tracking
         tracking_tests = [r for r in self.test_results if "Food Tracking" in r["test"]]
