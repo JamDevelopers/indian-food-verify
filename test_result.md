@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Build me application to track food healthy or not get product details from online and rate product according to content"
+user_problem_statement: "Build me application to track food healthy or not get product details from online and rate product according to content - enhanced for Indian products"
 
 backend:
   - task: "OpenFoodFacts API Integration"
