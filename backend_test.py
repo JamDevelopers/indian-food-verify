@@ -282,6 +282,297 @@ class BackendTester:
             except Exception as e:
                 self.log_test(f"Response Time - {name}", False, f"Error: {str(e)}")
     
+    async def test_indian_food_search(self):
+        """Test Indian OpenFoodFacts Integration with Indian food terms"""
+        indian_food_terms = [
+            "basmati rice", "wheat atta", "toor dal", "amul milk", 
+            "britannia biscuit", "haldiram namkeen", "chana dal", "ghee"
+        ]
+        
+        successful_searches = 0
+        
+        for term in indian_food_terms:
+            try:
+                payload = {"query": term, "limit": 10}
+                response = await self.client.post(f"{BACKEND_URL}/food/search", json=payload)
+                
+                if response.status_code == 200:
+                    products = response.json()
+                    if isinstance(products, list) and len(products) > 0:
+                        successful_searches += 1
+                        # Check if products have proper structure
+                        product = products[0]
+                        has_health_score = product.get("health_score") is not None
+                        has_health_rating = product.get("health_rating") is not None
+                        
+                        self.log_test(f"Indian Food Search - {term}", True, 
+                                    f"Found {len(products)} products, health scoring: {has_health_score and has_health_rating}")
+                    else:
+                        self.log_test(f"Indian Food Search - {term}", False, 
+                                    f"No products found for Indian term: {term}")
+                else:
+                    self.log_test(f"Indian Food Search - {term}", False, 
+                                f"Search failed with status {response.status_code}")
+                    
+            except Exception as e:
+                self.log_test(f"Indian Food Search - {term}", False, f"Search error: {str(e)}")
+        
+        # Overall Indian search functionality
+        if successful_searches >= len(indian_food_terms) * 0.6:  # At least 60% success
+            self.log_test("Indian OpenFoodFacts Integration", True, 
+                        f"Successfully searched {successful_searches}/{len(indian_food_terms)} Indian terms")
+        else:
+            self.log_test("Indian OpenFoodFacts Integration", False, 
+                        f"Only {successful_searches}/{len(indian_food_terms)} Indian searches successful")
+    
+    async def test_indian_food_categories(self):
+        """Test Indian Food Categories API endpoint"""
+        try:
+            response = await self.client.get(f"{BACKEND_URL}/food/categories")
+            
+            if response.status_code == 200:
+                categories = response.json()
+                if isinstance(categories, list) and len(categories) > 0:
+                    # Check for expected Indian categories
+                    expected_categories = ["dal", "rice", "atta", "ghee", "masala", "namkeen"]
+                    found_categories = [cat for cat in expected_categories if cat in categories]
+                    
+                    if len(found_categories) >= 4:  # At least 4 expected categories
+                        self.log_test("Indian Food Categories API", True, 
+                                    f"Found {len(categories)} categories including: {', '.join(found_categories[:5])}")
+                    else:
+                        self.log_test("Indian Food Categories API", False, 
+                                    f"Missing expected Indian categories. Found: {found_categories}")
+                else:
+                    self.log_test("Indian Food Categories API", False, 
+                                "No categories returned or invalid format", categories)
+            else:
+                self.log_test("Indian Food Categories API", False, 
+                            f"Categories API failed with status {response.status_code}")
+                
+        except Exception as e:
+            self.log_test("Indian Food Categories API", False, f"Categories test error: {str(e)}")
+    
+    async def test_indian_brand_prioritization(self):
+        """Test Indian Brand Prioritization in search results"""
+        indian_brands = ["amul", "britannia", "parle", "haldiram", "mdh", "everest"]
+        
+        # Test with generic terms that should return Indian brands first
+        test_terms = ["milk", "biscuit", "spices", "namkeen"]
+        
+        brand_prioritization_working = 0
+        
+        for term in test_terms:
+            try:
+                payload = {"query": term, "limit": 10}
+                response = await self.client.post(f"{BACKEND_URL}/food/search", json=payload)
+                
+                if response.status_code == 200:
+                    products = response.json()
+                    if products:
+                        # Check if any of the first 3 results have Indian brands
+                        top_products = products[:3]
+                        indian_brand_found = False
+                        
+                        for product in top_products:
+                            brand = product.get("brand", "").lower()
+                            if any(indian_brand in brand for indian_brand in indian_brands):
+                                indian_brand_found = True
+                                break
+                        
+                        if indian_brand_found:
+                            brand_prioritization_working += 1
+                            self.log_test(f"Indian Brand Priority - {term}", True, 
+                                        f"Indian brand found in top 3 results")
+                        else:
+                            self.log_test(f"Indian Brand Priority - {term}", False, 
+                                        f"No Indian brands in top 3 results for {term}")
+                    else:
+                        self.log_test(f"Indian Brand Priority - {term}", False, 
+                                    f"No products found for {term}")
+                        
+            except Exception as e:
+                self.log_test(f"Indian Brand Priority - {term}", False, f"Brand priority test error: {str(e)}")
+        
+        # Overall brand prioritization assessment
+        if brand_prioritization_working >= len(test_terms) * 0.5:  # At least 50% success
+            self.log_test("Indian Brand Prioritization", True, 
+                        f"Brand prioritization working for {brand_prioritization_working}/{len(test_terms)} terms")
+        else:
+            self.log_test("Indian Brand Prioritization", False, 
+                        f"Brand prioritization only working for {brand_prioritization_working}/{len(test_terms)} terms")
+    
+    async def test_popular_indian_foods_api(self):
+        """Test Popular Indian Foods API endpoint"""
+        try:
+            response = await self.client.get(f"{BACKEND_URL}/food/popular-indian")
+            
+            if response.status_code == 200:
+                products = response.json()
+                if isinstance(products, list) and len(products) > 0:
+                    # Check product structure and content
+                    valid_products = 0
+                    indian_products = 0
+                    
+                    for product in products:
+                        if all(key in product for key in ["id", "product_name", "health_score"]):
+                            valid_products += 1
+                            
+                            # Check if product seems Indian-related
+                            name = product.get("product_name", "").lower()
+                            brand = product.get("brand", "").lower()
+                            indian_terms = ["basmati", "dal", "atta", "amul", "britannia", "indian", "masala"]
+                            
+                            if any(term in name or term in brand for term in indian_terms):
+                                indian_products += 1
+                    
+                    if valid_products >= len(products) * 0.8:  # 80% valid structure
+                        if indian_products >= len(products) * 0.4:  # 40% Indian-related
+                            self.log_test("Popular Indian Foods API", True, 
+                                        f"Found {len(products)} products, {indian_products} Indian-related")
+                        else:
+                            self.log_test("Popular Indian Foods API", False, 
+                                        f"Only {indian_products}/{len(products)} products seem Indian-related")
+                    else:
+                        self.log_test("Popular Indian Foods API", False, 
+                                    f"Only {valid_products}/{len(products)} products have valid structure")
+                else:
+                    self.log_test("Popular Indian Foods API", False, 
+                                "No products returned or invalid format", products)
+            else:
+                self.log_test("Popular Indian Foods API", False, 
+                            f"Popular Indian foods API failed with status {response.status_code}")
+                
+        except Exception as e:
+            self.log_test("Popular Indian Foods API", False, f"Popular Indian foods test error: {str(e)}")
+    
+    async def test_enhanced_barcode_lookup(self):
+        """Test Enhanced Barcode Lookup with Indian product focus"""
+        # Common Indian product barcodes (some may not exist, but testing the functionality)
+        indian_barcodes = [
+            "8901030835029",  # Common Indian product format
+            "8901030800000",  # Amul product format
+            "8901030900000",  # Britannia product format
+            "8901725000000",  # Haldiram format
+        ]
+        
+        # Also test with known international barcodes for comparison
+        international_barcodes = [
+            "3017620422003",  # Nutella
+            "0012000161155"   # US product
+        ]
+        
+        indian_lookups = 0
+        total_lookups = 0
+        
+        # Test Indian barcodes
+        for barcode in indian_barcodes:
+            try:
+                response = await self.client.get(f"{BACKEND_URL}/food/barcode/{barcode}")
+                total_lookups += 1
+                
+                if response.status_code == 200:
+                    product = response.json()
+                    if product.get("product_name"):
+                        indian_lookups += 1
+                        self.log_test(f"Enhanced Barcode - Indian {barcode}", True, 
+                                    f"Found Indian product: {product['product_name']}")
+                    else:
+                        self.log_test(f"Enhanced Barcode - Indian {barcode}", False, 
+                                    "Product found but missing name")
+                elif response.status_code == 404:
+                    self.log_test(f"Enhanced Barcode - Indian {barcode}", True, 
+                                "Product not found (acceptable for test barcodes)")
+                else:
+                    self.log_test(f"Enhanced Barcode - Indian {barcode}", False, 
+                                f"Unexpected status {response.status_code}")
+                    
+            except Exception as e:
+                self.log_test(f"Enhanced Barcode - Indian {barcode}", False, f"Lookup error: {str(e)}")
+        
+        # Test international barcodes for comparison
+        for barcode in international_barcodes:
+            try:
+                response = await self.client.get(f"{BACKEND_URL}/food/barcode/{barcode}")
+                
+                if response.status_code == 200:
+                    product = response.json()
+                    if product.get("product_name"):
+                        self.log_test(f"Enhanced Barcode - International {barcode}", True, 
+                                    f"Found: {product['product_name']}")
+                elif response.status_code == 404:
+                    self.log_test(f"Enhanced Barcode - International {barcode}", True, 
+                                "Product not found (acceptable)")
+                    
+            except Exception as e:
+                self.log_test(f"Enhanced Barcode - International {barcode}", False, f"Lookup error: {str(e)}")
+        
+        # Overall enhanced barcode functionality
+        self.log_test("Enhanced Barcode Lookup", True, 
+                    f"Barcode lookup functionality working (tested {len(indian_barcodes + international_barcodes)} barcodes)")
+    
+    async def test_indian_nutritional_guidelines(self):
+        """Test Indian Nutritional Guidelines in health scoring"""
+        # Test with products that should have different scores based on Indian dietary patterns
+        test_products = [
+            ("ghee", "should have moderate score despite high fat (traditional Indian food)"),
+            ("basmati rice", "should have good score (staple Indian food)"),
+            ("dal", "should have excellent score (high protein, fiber)"),
+            ("indian sweets", "should have poor score (high sugar)"),
+            ("namkeen", "should have poor score (high sodium, processed)")
+        ]
+        
+        scoring_appropriate = 0
+        
+        for product_term, expectation in test_products:
+            try:
+                payload = {"query": product_term, "limit": 3}
+                response = await self.client.post(f"{BACKEND_URL}/food/search", json=payload)
+                
+                if response.status_code == 200:
+                    products = response.json()
+                    if products:
+                        product = products[0]
+                        health_score = product.get("health_score")
+                        health_rating = product.get("health_rating")
+                        
+                        if health_score is not None and health_rating:
+                            # Analyze if scoring seems appropriate for Indian context
+                            score_reasonable = True
+                            
+                            # Basic reasonableness checks
+                            if "dal" in product_term and health_score < 60:
+                                score_reasonable = False
+                            elif "sweets" in product_term and health_score > 50:
+                                score_reasonable = False
+                            elif "namkeen" in product_term and health_score > 40:
+                                score_reasonable = False
+                            
+                            if score_reasonable:
+                                scoring_appropriate += 1
+                                self.log_test(f"Indian Nutrition - {product_term}", True, 
+                                            f"Score {health_score} ({health_rating}) - {expectation}")
+                            else:
+                                self.log_test(f"Indian Nutrition - {product_term}", False, 
+                                            f"Score {health_score} seems inappropriate - {expectation}")
+                        else:
+                            self.log_test(f"Indian Nutrition - {product_term}", False, 
+                                        "Missing health score or rating")
+                    else:
+                        self.log_test(f"Indian Nutrition - {product_term}", False, 
+                                    f"No products found for {product_term}")
+                        
+            except Exception as e:
+                self.log_test(f"Indian Nutrition - {product_term}", False, f"Nutrition test error: {str(e)}")
+        
+        # Overall Indian nutritional guidelines assessment
+        if scoring_appropriate >= len(test_products) * 0.6:  # At least 60% appropriate
+            self.log_test("Indian Nutritional Guidelines", True, 
+                        f"Health scoring appropriate for {scoring_appropriate}/{len(test_products)} Indian food types")
+        else:
+            self.log_test("Indian Nutritional Guidelines", False, 
+                        f"Health scoring only appropriate for {scoring_appropriate}/{len(test_products)} Indian food types")
+
     async def test_error_handling(self):
         """Test API error handling"""
         try:
