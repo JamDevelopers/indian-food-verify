@@ -82,61 +82,66 @@ class FoodTrackingCreate(BaseModel):
 class HealthScoreCalculator:
     @staticmethod
     def calculate_health_score(nutrition: NutritionInfo, nutriscore_grade: str = None, nova_group: int = None, additives: List[str] = None) -> tuple[float, str]:
-        """Calculate health score from 0-100 and return rating"""
+        """Calculate health score from 0-100 with Indian dietary considerations"""
         score = 100  # Start with perfect score
         
         if nutrition:
-            # Penalize high calories (above 300 kcal/100g)
-            if nutrition.energy_100g and nutrition.energy_100g > 300:
-                score -= min(30, (nutrition.energy_100g - 300) / 10)
+            # Indian-specific nutritional considerations
+            # Penalize high calories (Indian diet typically 250-400 kcal/100g)
+            if nutrition.energy_100g and nutrition.energy_100g > 350:
+                score -= min(30, (nutrition.energy_100g - 350) / 8)
             
-            # Penalize high sugar (above 10g/100g)
-            if nutrition.sugars_100g and nutrition.sugars_100g > 10:
-                score -= min(25, (nutrition.sugars_100g - 10) * 2)
+            # Penalize high sugar (Indian sweets are high, but processed foods should be limited)
+            if nutrition.sugars_100g and nutrition.sugars_100g > 12:
+                score -= min(25, (nutrition.sugars_100g - 12) * 2)
             
-            # Penalize high sodium (above 1g/100g)
-            if nutrition.sodium_100g and nutrition.sodium_100g > 1:
-                score -= min(20, (nutrition.sodium_100g - 1) * 15)
-            elif nutrition.salt_100g and nutrition.salt_100g > 2.5:
-                score -= min(20, (nutrition.salt_100g - 2.5) * 6)
+            # Penalize high sodium (Indian food is naturally salty, but processed foods are concerning)
+            if nutrition.sodium_100g and nutrition.sodium_100g > 1.2:
+                score -= min(20, (nutrition.sodium_100g - 1.2) * 12)
+            elif nutrition.salt_100g and nutrition.salt_100g > 3:
+                score -= min(20, (nutrition.salt_100g - 3) * 5)
             
-            # Penalize high saturated fat (above 5g/100g)
-            if nutrition.saturated_fat_100g and nutrition.saturated_fat_100g > 5:
-                score -= min(20, (nutrition.saturated_fat_100g - 5) * 2)
+            # Penalize high saturated fat (ghee is common but processed trans fats are bad)
+            if nutrition.saturated_fat_100g and nutrition.saturated_fat_100g > 6:
+                score -= min(20, (nutrition.saturated_fat_100g - 6) * 2)
             
-            # Reward high fiber (above 3g/100g)
-            if nutrition.fiber_100g and nutrition.fiber_100g > 3:
-                score += min(15, (nutrition.fiber_100g - 3) * 3)
+            # Reward high fiber (important in Indian diet with whole grains)
+            if nutrition.fiber_100g and nutrition.fiber_100g > 2:
+                score += min(20, (nutrition.fiber_100g - 2) * 4)
             
-            # Reward high protein (above 10g/100g)
-            if nutrition.proteins_100g and nutrition.proteins_100g > 10:
-                score += min(10, (nutrition.proteins_100g - 10) * 1)
+            # Reward high protein (dal, paneer, etc. are protein sources)
+            if nutrition.proteins_100g and nutrition.proteins_100g > 8:
+                score += min(15, (nutrition.proteins_100g - 8) * 1.5)
+            
+            # Reward low to moderate carbs (rice and wheat are staples)
+            if nutrition.carbohydrates_100g and nutrition.carbohydrates_100g > 70:
+                score -= min(10, (nutrition.carbohydrates_100g - 70) / 5)
         
         # Factor in Nutri-Score if available
         if nutriscore_grade:
-            grade_penalties = {'a': 0, 'b': -5, 'c': -15, 'd': -25, 'e': -35}
+            grade_penalties = {'a': 5, 'b': 0, 'c': -10, 'd': -20, 'e': -30}
             score += grade_penalties.get(nutriscore_grade.lower(), 0)
         
-        # Factor in NOVA group (food processing level)
+        # Factor in NOVA group (processed foods are concerning in Indian context)
         if nova_group:
-            nova_penalties = {1: 0, 2: -5, 3: -15, 4: -25}
+            nova_penalties = {1: 10, 2: 0, 3: -20, 4: -30}
             score += nova_penalties.get(nova_group, 0)
         
-        # Penalize additives
+        # Heavily penalize additives (Indian traditional food has fewer additives)
         if additives:
-            score -= min(15, len(additives) * 2)
+            score -= min(20, len(additives) * 3)
         
         # Ensure score is within bounds
         score = max(0, min(100, score))
         
-        # Convert to rating
-        if score >= 80:
+        # Convert to rating with Indian context
+        if score >= 85:
             rating = "Excellent"
-        elif score >= 65:
+        elif score >= 70:
             rating = "Good"
-        elif score >= 50:
+        elif score >= 55:
             rating = "Moderate"
-        elif score >= 35:
+        elif score >= 40:
             rating = "Poor"
         else:
             rating = "Very Poor"
